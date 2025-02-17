@@ -1,7 +1,7 @@
 <script setup>
 import { Head } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 
 const props = defineProps({
     wallets: {
@@ -16,6 +16,12 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+});
+
+onMounted(() => {
+    console.log("Wallets:", props.wallets);
+    console.log("Total Balance:", props.totalBalance);
+    console.log("Recent Transactions:", props.recentTransactions);
 });
 
 const totalWallets = computed(() => props.wallets?.length || 0);
@@ -164,32 +170,36 @@ const getTransactionStatus = (tx) => {
                                     :href="route('wallets.show', wallet.id)"
                                     class="block"
                                 >
-                                    <div
-                                        class="flex justify-between items-start"
-                                    >
-                                        <div>
-                                            <div
-                                                class="font-cyber text-yellow-500"
-                                            >
-                                                {{ wallet.name }}
+                                    <div class="space-y-2">
+                                        <!-- Wallet Name and Balance -->
+                                        <div
+                                            class="flex justify-between items-center"
+                                        >
+                                            <div>
+                                                <div
+                                                    class="font-cyber text-yellow-500"
+                                                >
+                                                    {{ wallet.name }}
+                                                </div>
                                             </div>
-                                            <div
-                                                class="text-sm text-yellow-500/60 font-mono truncate mt-1"
-                                            >
-                                                {{ wallet.address }}
+                                            <div class="text-right">
+                                                <div
+                                                    class="text-yellow-500 font-cyber"
+                                                >
+                                                    {{
+                                                        formatBalance(
+                                                            wallet.eth_balance
+                                                        )
+                                                    }}
+                                                    ETH
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="text-right">
-                                            <div
-                                                class="text-yellow-500 font-cyber"
-                                            >
-                                                {{
-                                                    formatBalance(
-                                                        wallet.eth_balance
-                                                    )
-                                                }}
-                                                ETH
-                                            </div>
+                                        <!-- Wallet Address -->
+                                        <div
+                                            class="text-sm text-yellow-500/60 font-mono truncate border-t border-yellow-500/10 pt-2"
+                                        >
+                                            {{ wallet.address }}
                                         </div>
                                     </div>
                                 </Link>

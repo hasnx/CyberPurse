@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\TermsController;
 use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -31,3 +32,7 @@ Route::middleware([
 
 Route::get('/terms-of-service', [TermsController::class, 'show'])->name('terms.show');
 Route::get('/privacy-policy', [PolicyController::class, 'show'])->name('policy.show');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
