@@ -1,0 +1,234 @@
+<script setup>
+import { Head, Link, useForm } from "@inertiajs/vue3";
+import { ref } from "vue";
+import AuthenticationCardLogo from "@/Components/AuthenticationCardLogo.vue";
+import Checkbox from "@/Components/Checkbox.vue";
+import InputError from "@/Components/InputError.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import TextInput from "@/Components/TextInput.vue";
+
+defineProps({
+    canResetPassword: Boolean,
+    status: String,
+});
+
+const form = useForm({
+    email: "",
+    password: "",
+    remember: false,
+});
+
+const submit = () => {
+    form.post(route("login"), {
+        onFinish: () => form.reset("password"),
+    });
+};
+
+// Animation triggers
+const isLoading = ref(false);
+const showDecoration = ref(false);
+
+// Show decoration after mount
+setTimeout(() => {
+    showDecoration.value = true;
+}, 100);
+</script>
+
+<template>
+    <Head title="Log in" />
+
+    <div class="min-h-screen bg-night-city relative overflow-hidden">
+        <!-- Scanlines Effect -->
+        <div class="absolute inset-0 pointer-events-none scanlines"></div>
+
+        <!-- Main Content -->
+        <div
+            class="relative min-h-screen flex items-center justify-center px-4"
+        >
+            <div class="w-full max-w-lg relative">
+                <!-- Decorative Corner Elements -->
+                <div class="absolute -top-2 -left-2 w-16 h-16">
+                    <div
+                        class="absolute top-0 left-0 w-full h-2 bg-yellow-500"
+                    ></div>
+                    <div
+                        class="absolute top-0 left-0 h-full w-2 bg-yellow-500"
+                    ></div>
+                </div>
+                <div class="absolute -bottom-2 -right-2 w-16 h-16">
+                    <div
+                        class="absolute bottom-0 right-0 w-full h-2 bg-yellow-500"
+                    ></div>
+                    <div
+                        class="absolute bottom-0 right-0 h-full w-2 bg-yellow-500"
+                    ></div>
+                </div>
+
+                <!-- Login Form -->
+                <div class="bg-black/80 border-2 border-yellow-500/20 p-8">
+                    <div class="mb-8 text-center">
+                        <h1
+                            class="text-4xl font-cyber text-yellow-500 uppercase glitch-text"
+                        >
+                            Access Terminal
+                        </h1>
+                        <div
+                            class="mt-2 h-1 w-32 mx-auto bg-gradient-to-r from-transparent via-yellow-500 to-transparent"
+                        ></div>
+                    </div>
+
+                    <form @submit.prevent="submit" class="space-y-6">
+                        <div class="space-y-1">
+                            <InputLabel
+                                for="email"
+                                value="EMAIL"
+                                class="text-yellow-500 font-cyber tracking-wider"
+                            />
+                            <div class="relative">
+                                <TextInput
+                                    id="email"
+                                    v-model="form.email"
+                                    type="email"
+                                    class="block w-full bg-black border-2 border-yellow-500/50 focus:border-yellow-500 focus:ring-0 text-yellow-500 placeholder-yellow-500/50"
+                                    required
+                                    autofocus
+                                />
+                                <div
+                                    class="absolute -bottom-0.5 -left-0.5 w-4 h-4 border-b-2 border-l-2 border-yellow-500"
+                                ></div>
+                                <div
+                                    class="absolute -top-0.5 -right-0.5 w-4 h-4 border-t-2 border-r-2 border-yellow-500"
+                                ></div>
+                            </div>
+                            <InputError
+                                class="mt-1"
+                                :message="form.errors.email"
+                            />
+                        </div>
+
+                        <div class="space-y-1">
+                            <InputLabel
+                                for="password"
+                                value="PASSWORD"
+                                class="text-yellow-500 font-cyber tracking-wider"
+                            />
+                            <div class="relative">
+                                <TextInput
+                                    id="password"
+                                    v-model="form.password"
+                                    type="password"
+                                    class="block w-full bg-black border-2 border-yellow-500/50 focus:border-yellow-500 focus:ring-0 text-yellow-500"
+                                    required
+                                />
+                                <div
+                                    class="absolute -bottom-0.5 -left-0.5 w-4 h-4 border-b-2 border-l-2 border-yellow-500"
+                                ></div>
+                                <div
+                                    class="absolute -top-0.5 -right-0.5 w-4 h-4 border-t-2 border-r-2 border-yellow-500"
+                                ></div>
+                            </div>
+                            <InputError
+                                class="mt-1"
+                                :message="form.errors.password"
+                            />
+                        </div>
+
+                        <div class="flex items-center justify-between text-sm">
+                            <label class="flex items-center">
+                                <Checkbox
+                                    v-model:checked="form.remember"
+                                    name="remember"
+                                    class="bg-black border-yellow-500/50 text-yellow-500 focus:ring-0 rounded-none"
+                                />
+                                <span class="ml-2 text-yellow-500/80"
+                                    >REMEMBER ME</span
+                                >
+                            </label>
+
+                            <Link
+                                v-if="canResetPassword"
+                                :href="route('password.request')"
+                                class="text-yellow-500/80 hover:text-yellow-500 transition-colors uppercase"
+                            >
+                                Reset Password
+                            </Link>
+                        </div>
+
+                        <div class="pt-4">
+                            <button
+                                class="w-full py-3 bg-yellow-500/10 hover:bg-yellow-500/20 border-2 border-yellow-500 text-yellow-500 font-cyber tracking-widest transition-all relative group uppercase z-10"
+                                :class="{ 'opacity-25': form.processing }"
+                                :disabled="form.processing"
+                            >
+                                <span class="relative z-10"
+                                    >ESTABLISH CONNECTION</span
+                                >
+                            </button>
+                        </div>
+
+                        <div class="text-center mt-8 relative z-20">
+                            <Link
+                                :href="route('register')"
+                                class="inline-flex items-center gap-2 text-yellow-500/80 text-sm font-cyber tracking-wider group"
+                            >
+                                <span
+                                    class="text-yellow-500/60 group-hover:text-yellow-500/80 transition-colors"
+                                    >[</span
+                                >
+                                Need clearance? Register now
+                                <span
+                                    class="text-yellow-500/60 group-hover:text-yellow-500/80 transition-colors"
+                                    >]</span
+                                >
+                            </Link>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+.scanlines {
+    background: linear-gradient(
+        to bottom,
+        transparent 50%,
+        rgba(0, 0, 0, 0.5) 50%
+    );
+    background-size: 100% 4px;
+    animation: scanlines 0.2s linear infinite;
+}
+
+@keyframes scanlines {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(4px);
+    }
+}
+
+.glitch-text {
+    text-shadow: 2px 2px #ff0000, -2px -2px #00ff00;
+    animation: glitch 0.5s infinite;
+}
+
+@keyframes glitch {
+    0% {
+        text-shadow: 2px 2px #ff0000, -2px -2px #00ff00;
+    }
+    25% {
+        text-shadow: -2px 2px #ff0000, 2px -2px #00ff00;
+    }
+    50% {
+        text-shadow: 2px -2px #ff0000, -2px 2px #00ff00;
+    }
+    75% {
+        text-shadow: -2px -2px #ff0000, 2px 2px #00ff00;
+    }
+    100% {
+        text-shadow: 2px 2px #ff0000, -2px -2px #00ff00;
+    }
+}
+</style>
